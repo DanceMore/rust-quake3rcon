@@ -27,9 +27,18 @@ jobs:
         tag=$(git rev-parse --short=8 ${{ github.sha }})
         echo "tag=${tag}" >> $GITHUB_ENV
 
-    - name: Build for Linux x86-64
+    - name: Set up Rust Environment for Linux x86_64
       run: |
         rustup target add x86_64-unknown-linux-gnu
+
+    - name: List Rust Environment Version info
+      run: |
+        rustup --version
+        cargo --version
+        rustc --version
+
+    - name: Build for Linux x86-64
+      run: |
         cargo build --release --target x86_64-unknown-linux-gnu
         cp target/x86_64-unknown-linux-gnu/release/rust-quake3rcon ./rust-quake3rcon-linux-x86_64
 
@@ -64,9 +73,18 @@ jobs:
         tag=$(git rev-parse --short=8 ${{ github.sha }})
         echo "tag=${tag}" >> $GITHUB_ENV
 
-    - name: Build for macOS
+    - name: Set up Rust Environment for macOS
       run: |
         rustup target add x86_64-apple-darwin
+
+    - name: List Rust Environment Version info
+      run: |
+        rustup --version
+        cargo --version
+        rustc --version
+
+    - name: Build for macOS
+      run: |
         cargo build --release --target x86_64-apple-darwin
         cp target/x86_64-apple-darwin/release/rust-quake3rcon ./rust-quake3rcon-macos
 
@@ -101,6 +119,14 @@ jobs:
       run: |
         $tag = git rev-parse --short=8 $env:GITHUB_SHA
         Set-Content -Path $env:GITHUB_ENV -Value "tag=$tag"
+
+    # Windows-specific Rust Environment setup not required.
+
+    - name: List Rust Environment Version info
+      run: |
+        rustup --version
+        cargo --version
+        rustc --version
 
     - name: Build for Windows x86-64
       run: |
