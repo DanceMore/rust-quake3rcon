@@ -1,48 +1,37 @@
-extern crate clap;
-use clap::{App, Arg};
+use clap::{Arg, Parser};
 use std::net::{ToSocketAddrs, UdpSocket};
 use std::time::Duration;
 
+#[derive(Parser, Debug)]
+struct Args {
+    #[clap(long)]
+    host: String,
+
+    #[clap(long, default_value = "27960")]
+    port: u16,
+
+    #[clap(long, default_value = "password")]
+    rconpass: String,
+
+    #[clap(name = "COMMAND")]
+    command: String,
+}
+
 fn main() -> std::io::Result<()> {
     // Define the command-line interface using clap
-    let matches = App::new("RCON Client")
-        .color(clap::ColorChoice::Auto)
-        .arg(
-            Arg::with_name("host")
-                .long("host")
-                .value_name("HOST")
-                .default_value("localhost")
-                .help("Server hostname or IP address"),
-        )
-        .arg(
-            Arg::with_name("port")
-                .long("port")
-                .value_name("PORT")
-                .default_value("27960")
-                .help("Server port"),
-        )
-        .arg(
-            Arg::with_name("rconpass")
-                .long("rconpass")
-                .value_name("PASSWORD")
-                .default_value("password")
-                .help("RCON password"),
-        )
-        .arg(
-            Arg::with_name("COMMAND")
-                .help("RCON command to send")
-                .required(true)
-                .index(1),
-        )
-        .get_matches();
+    let args: Args = Args::parse();
 
     // Extract values from command-line arguments
-    let host = matches.value_of("host").unwrap();
-    let port = matches.value_of("port").unwrap().parse::<u16>().unwrap();
-    let rconpass = matches.value_of("rconpass").unwrap();
-    let command = matches.value_of("COMMAND").unwrap();
+    let host = &args.host;
+    let port = args.port;
+    let rconpass = &args.rconpass;
+    let command = &args.command;
 
-    let addr = (host, port).to_socket_addrs()?.next().unwrap();
+    // Convert host and port into a SocketAddr
+    let addr = format!("{}:{}", host, port)
+        .to_socket_addrs()?
+        .next()
+        .unwrap();
 
     // Packet header
     let header = b"\xff\xff\xff\xffrcon ";
