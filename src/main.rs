@@ -1,6 +1,7 @@
 extern crate clap;
 use clap::{App, Arg};
 use std::net::{ToSocketAddrs, UdpSocket};
+use std::time::Duration;
 
 fn main() -> std::io::Result<()> {
     // Define the command-line interface using clap
@@ -49,6 +50,11 @@ fn main() -> std::io::Result<()> {
     // Open socket to speak to the server
     let udp_sock = UdpSocket::bind("0.0.0.0:0")?;
 
+    // Set read and write timeouts for the UDP socket
+    let timeout_duration = Duration::from_secs(5); // Adjust this value as needed
+    udp_sock.set_read_timeout(Some(timeout_duration))?;
+    udp_sock.set_write_timeout(Some(timeout_duration))?;
+
     // Construct the RCON packet
     let mut data_out = Vec::new();
     data_out.extend_from_slice(header);
@@ -61,15 +67,16 @@ fn main() -> std::io::Result<()> {
     }
 
     let mut buf = [0u8; 2084];
-    let (amt, _src) = udp_sock.recv_from(&mut buf)?;
-    let data_in = &buf[..amt];
-
-    if data_in.is_empty() {
-        println!("no response from server");
+    if let Ok((amt, _src)) = udp_sock.recv_from(&mut buf) {
+        let data_in = &buf[..amt];
+        if data_in.is_empty() {
+            println!("no response from server");
+        } else {
+            println!("{}", String::from_utf8_lossy(data_in));
+        }
     } else {
-        println!("{}", String::from_utf8_lossy(data_in));
+        println!("socket operation timed out");
     }
 
-    // Close socket
     Ok(())
 }
