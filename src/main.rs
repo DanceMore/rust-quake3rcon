@@ -5,6 +5,7 @@ use std::net::{ToSocketAddrs, UdpSocket};
 fn main() -> std::io::Result<()> {
     // Define the command-line interface using clap
     let matches = App::new("RCON Client")
+        .color(clap::ColorChoice::Auto)
         .arg(Arg::with_name("host")
             .long("host")
             .value_name("HOST")
