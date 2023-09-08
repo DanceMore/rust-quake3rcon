@@ -6,25 +6,33 @@ fn main() -> std::io::Result<()> {
     // Define the command-line interface using clap
     let matches = App::new("RCON Client")
         .color(clap::ColorChoice::Auto)
-        .arg(Arg::with_name("host")
-            .long("host")
-            .value_name("HOST")
-            .default_value("localhost")
-            .help("Server hostname or IP address"))
-        .arg(Arg::with_name("port")
-            .long("port")
-            .value_name("PORT")
-            .default_value("27960")
-            .help("Server port"))
-        .arg(Arg::with_name("rconpass")
-            .long("rconpass")
-            .value_name("PASSWORD")
-            .default_value("password")
-            .help("RCON password"))
-        .arg(Arg::with_name("COMMAND")
-            .help("RCON command to send")
-            .required(true)
-            .index(1))
+        .arg(
+            Arg::with_name("host")
+                .long("host")
+                .value_name("HOST")
+                .default_value("localhost")
+                .help("Server hostname or IP address"),
+        )
+        .arg(
+            Arg::with_name("port")
+                .long("port")
+                .value_name("PORT")
+                .default_value("27960")
+                .help("Server port"),
+        )
+        .arg(
+            Arg::with_name("rconpass")
+                .long("rconpass")
+                .value_name("PASSWORD")
+                .default_value("password")
+                .help("RCON password"),
+        )
+        .arg(
+            Arg::with_name("COMMAND")
+                .help("RCON command to send")
+                .required(true)
+                .index(1),
+        )
         .get_matches();
 
     // Extract values from command-line arguments
