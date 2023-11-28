@@ -51,7 +51,7 @@ fn main() -> std::io::Result<()> {
     data_out.push(b' ');
     data_out.extend_from_slice(command.as_bytes());
 
-    if udp_sock.send_to(&data_out, &addr).is_ok() {
+    if udp_sock.send_to(&data_out, addr).is_ok() {
         println!("{}", String::from_utf8_lossy(&data_out));
     }
 
