@@ -1,4 +1,4 @@
-use clap::{Arg, Parser};
+use clap::Parser;
 use std::net::{ToSocketAddrs, UdpSocket};
 use std::time::Duration;
 
